@@ -69,7 +69,7 @@ def color_guess(guess, wordle):
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description="Wordle Game")
     parser.add_argument('-w', '--wordle', type=str, help='Wordle')
-    parser.add_argument('-n', type=int, help="Number of attempts")
+    parser.add_argument('-n', '--attempts', type=int, help="Number of attempts")
     args = parser.parse_args()
 
     main(args.wordle, args.n)

@@ -1,0 +1,88 @@
+{
+    "data": [
+        {
+            "wordle": "likes",
+            "guesses": [
+                "makes",
+                "likes"
+            ]
+        },
+        {
+            "wordle": "dikey",
+            "guesses": [
+                "takes",
+                "likes",
+                "makes",
+                "crane",
+                "mouth",
+                "coins"
+            ]
+        },
+        {
+            "wordle": "racer",
+            "guesses": [
+                "takes",
+                "likes",
+                "makes",
+                "mouth",
+                "crane",
+                "tokes"
+            ]
+        },
+        {
+            "wordle": "milky",
+            "guesses": [
+                "takes",
+                "likes",
+                "makes",
+                "tokes",
+                "crane",
+                "mouth"
+            ]
+        },
+        {
+            "wordle": "croft",
+            "guesses": [
+                "likes",
+                "takes",
+                "makes",
+                "mouth",
+                "crane",
+                "tokes"
+            ]
+        },
+        {
+            "wordle": "cento",
+            "guesses": [
+                "likes",
+                "makes",
+                "takes",
+                "crane",
+                "mouth",
+                "tokes"
+            ]
+        },
+        {
+            "wordle": "naive",
+            "guesses": [
+                "likes",
+                "makes",
+                "crane",
+                "mouth",
+                "tokes",
+                "takes"
+            ]
+        },
+        {
+            "wordle": "dodge",
+            "guesses": [
+                "takes",
+                "likes",
+                "makes",
+                "mouth",
+                "crane",
+                "tokes"
+            ]
+        }
+    ]
+}

@@ -1,29 +1,14 @@
-import sys
-import argparse
 import random
 import math
+import json
 
-def main(wordle, attempts, dictionary):
-    if wordle is None:
-        wordle = 'xxxxx'
-    if attempts is None:
-        attempts = 6
-    # Load dictionary and and create valid words list based on wordle length
-    valid_words = []
-    with open('enable1.txt') as f:
-        dictionary = f.readlines()
-        for word in dictionary:
-            word = word.strip("\n")
-            if len(word) == len(wordle):
-                valid_words.append(word)
-
-    if wordle == 'xxxxx':
-        wordle = valid_words[math.ceil(random.random() * len(valid_words))]
+def main():
+    valid_words = load_valid_words()
+    wordle = valid_words[math.ceil(random.random() * len(valid_words))];
 
     guesses = []
-    while len(guesses) < attempts:
+    while len(guesses) < 6:
         guess = input("Take your guess:\n")
-
         if guess == 'exit()':
             print("Exiting wordle-cli-python game")
             return
@@ -50,9 +35,13 @@ def main(wordle, attempts, dictionary):
         # Determine whether the user has won the game
         if guess == wordle:
             print("Congratulations!")
+            save_attempt(wordle, guessses)
+            print(show_data())
             return
 
     print("Out of attempts. The word was {}.".format(wordle))
+    save_attempt(wordle, guesses)
+    print(show_data())
 
 def color_guess(guess, wordle):
     colored_guess = []
@@ -65,11 +54,30 @@ def color_guess(guess, wordle):
         colored_guess.append(x)
     return "".join(colored_guess)
 
+def load_valid_words():
+    valid_words = []
+    with open('enable1.txt') as f:
+        dictionary = f.readlines()
+        for word in dictionary:
+            word = word.strip("\n")
+            if len(word) == 5:
+                valid_words.append(word)
+    
+    return valid_words
+
+def save_attempt(wordle, guesses):
+    data = {"wordle": wordle, "guesses": guesses}
+    with open('data.json', 'r+') as f:
+        file_data = json.load(f)
+        file_data['data'].append(data)
+        f.seek(0)
+        json.dump(file_data, f, indent = 4)
+
+def show_data():
+    with open('data.json') as f:
+        data = json.load(f)
+        for entry in data['data']:
+            print("wordle: {}, guesses {}, attempts: {}".format(entry['wordle'], entry['guesses'], len(entry['guesses'])))
 
 if __name__=="__main__":
-    parser = argparse.ArgumentParser(description="Wordle Game")
-    parser.add_argument('-w', '--wordle', type=str, help='Wordle')
-    parser.add_argument('-n', '--attempts', type=int, help="Number of attempts")
-    args = parser.parse_args()
-
-    main(args.wordle, args.n)
+    main()

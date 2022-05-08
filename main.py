@@ -2,10 +2,14 @@ import random
 import math
 import json
 
+from os.path import exists
+
 def main():
     valid_words = load_valid_words()
     wordle = valid_words[math.ceil(random.random() * len(valid_words))];
+    wordle_runner(wordle, valid_words, 'data2.json')
 
+def wordle_runner(wordle, valid_words, path_to_data_file):
     guesses = []
     while len(guesses) < 6:
         guess = input("Take your guess:\n")
@@ -30,18 +34,21 @@ def main():
             print(colored_guess)
         print("-----\n")
 
-        # Print the user their guess with green/yellow highlighted letters
-
         # Determine whether the user has won the game
         if guess == wordle:
+            save_attempt(wordle, guesses, path_to_data_file)
+            labels, occurences = load_attempts(path_to_data_file)
             print("Congratulations!")
-            save_attempt(wordle, guessses)
-            print(show_data())
+            print("\nPast Attempts:\n--------------------------------")
+            print(ascii_bar_graph(labels, occurences))
             return
 
-    print("Out of attempts. The word was {}.".format(wordle))
-    save_attempt(wordle, guesses)
-    print(show_data())
+    # User has lost the game
+    save_attempt(wordle, guesses, path_to_data_file)
+    labels, occurences = load_attempts(path_to_data_file)
+    print("Out of attempts. The word was {}.\n".format(wordle))
+    print("\nPast Attempts:\n--------------------------------")
+    print(ascii_bar_graph(labels, occurences))
 
 def color_guess(guess, wordle):
     colored_guess = []
@@ -50,7 +57,6 @@ def color_guess(guess, wordle):
             x = "\033[1;32m{}\033[00m".format(x)
         elif x in wordle:
             x = "\033[1;33m{}\033[00m".format(x)
-
         colored_guess.append(x)
     return "".join(colored_guess)
 
@@ -62,22 +68,34 @@ def load_valid_words():
             word = word.strip("\n")
             if len(word) == 5:
                 valid_words.append(word)
-    
     return valid_words
 
-def save_attempt(wordle, guesses):
+def save_attempt(wordle, guesses, path_to_data_file):
     data = {"wordle": wordle, "guesses": guesses}
-    with open('data.json', 'r+') as f:
+    with open(path_to_data_file, 'a+') as f:
         file_data = json.load(f)
+        if 'data' not in file_data or type(file_data['data']) is not list: 
+            file_data['data'] = []
+
         file_data['data'].append(data)
         f.seek(0)
         json.dump(file_data, f, indent = 4)
-
-def show_data():
-    with open('data.json') as f:
+            
+def load_attempts(path_to_file):
+    labels = [1,2,3,4,5,6]
+    attempts = [0,0,0,0,0,0]
+    with open(path_to_file) as f:
         data = json.load(f)
         for entry in data['data']:
-            print("wordle: {}, guesses {}, attempts: {}".format(entry['wordle'], entry['guesses'], len(entry['guesses'])))
+            attempts[len(entry['guesses'])-1] += 1
+
+    return (labels, attempts)
+
+def ascii_bar_graph(labels, occurences):
+    ascii_bar = ""
+    for i in range(len(labels)):
+        ascii_bar += "{} |{}\n".format(labels[i], '*' * occurences[i])
+    return ascii_bar
 
 if __name__=="__main__":
     main()
